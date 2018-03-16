@@ -1,0 +1,35 @@
+{
+  "name": "@folio/datasets",
+  "version": "1.2.0",
+  "description": "A client for the Glint dataset server.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "lint": "eslint *.js || true"
+  },
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "stripes": {
+    "type": "app",
+    "displayName": "Datasets",
+    "route": "/datasets"
+  },
+  "devDependencies": {
+    "babel-core": "^6.17.0",
+    "babel-eslint": "^8.2.2",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-register": "^6.18.0",
+    "eslint": "^4.7.0",
+    "eslint-config-stripes": ">=0.0.0"
+  },
+  "dependencies": {
+    "@folio/stripes-components": "^2.0.0",
+    "csvtojson": "^1.1.9",
+    "react-router-dom": "^4.1.1"
+  },
+  "peerDependencies": {
+    "react": "*"
+  }
+}
