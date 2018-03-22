@@ -56,9 +56,15 @@ class Datasets extends React.Component {
         throw new Error(`HTTP error ${body}`);
       }
     }));
-  };
+  }
+
+  onSelectRow = (e, meta) => {
+    this.props.history.push(`${this.props.match.url}/${meta.Name}`);
+    this.setState({ clicked: { Name: meta.Name } });
+  }
 
   render() {
+    const { match } = this.props;
     return (
       <Paneset>
         <Pane
@@ -76,17 +82,16 @@ class Datasets extends React.Component {
           lastMenu={newDatasetButton}
           noOverflow
         >
-          (TODO: MultiColumnList here)
-          <ul>
-            {this.state.datasets.map(item => (
-              <li key={item}>
-                <Link to={`${this.props.match.url}/${item}`}>{item}</Link>
-              </li>
-            ))}
-          </ul>
+          <MultiColumnList
+            contentData={this.state.datasets.map(item => ({ Name: item }))}
+            onRowClick={this.onSelectRow}
+            selectedRow={this.state.clicked}
+            virtualize
+            autosize
+          />
         </Pane>
         <Route
-          path={`${this.props.match.path}/:dataset`}
+          path={`${match.path}/:dataset`}
           render={props => <Dataset glint={glint} {...props} />}
         />
       </Paneset>
