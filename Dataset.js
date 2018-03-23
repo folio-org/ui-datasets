@@ -20,22 +20,33 @@ class Dataset extends React.Component {
   }
 
   render() {
+    const { history, match, closeURL } = this.props;
     return (
-      <Pane defaultWidth="44%" paneTitle={this.props.match.params.dataset}>
+      <Pane
+        defaultWidth="44%"
+        paneTitle={match.params.dataset}
+        dismissible
+        onClose={() => history.push(closeURL)}
+      >
         <Accordion label="Dataset information">
           ...eventually we will have some information about the dataset here.
         </Accordion>
         <Accordion label="View/filter data">
-          <Link to={`${this.props.match.url}/view/table`}>Table</Link>
+          <Link to={`${match.url}/view/table`}>Table</Link>
         </Accordion>
         <Accordion label="Column metadata">
           Accordion components cannot be empty?
         </Accordion>
         <Route
-          path={`${this.props.match.path}/view/:type`}
+          path={`${match.path}/view/:type`}
           render={props => (
             <Layer isOpen label="View dataset">
-              <View renderer={renderers[props.match.params.type]} glint={this.props.glint} {...props} />
+              <View
+                renderer={renderers[props.match.params.type]}
+                glint={this.props.glint}
+                closeURL={match.url}
+                {...props}
+              />
             </Layer>
           )}
         />

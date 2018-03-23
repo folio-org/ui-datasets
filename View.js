@@ -4,6 +4,8 @@ import csv from 'csvtojson';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import Pane from '@folio/stripes-components/lib/Pane';
 
+import URLClose from './URLClose';
+
 class View extends React.Component {
   componentDidMount() {
     const { glint, match: { params: { user, dataset } } } = this.props;
@@ -20,7 +22,10 @@ class View extends React.Component {
     if (this.state) {
       return (
         <Paneset>
-          <Pane defaultWidth="fill">
+          <Pane
+            firstMenu={(<URLClose url={this.props.closeURL} />)}
+            defaultWidth="fill"
+          >
             <Renderer data={this.state.data} />
           </Pane>
         </Paneset>

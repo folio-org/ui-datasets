@@ -30,6 +30,7 @@
     "react-router-dom": "^4.1.1"
   },
   "peerDependencies": {
-    "react": "*"
+    "react": "*",
+    "react-router": "*"
   }
 }

@@ -92,7 +92,7 @@ class Datasets extends React.Component {
         </Pane>
         <Route
           path={`${match.path}/:dataset`}
-          render={props => <Dataset glint={glint} {...props} />}
+          render={props => <Dataset glint={glint} closeURL={match.url} {...props} />}
         />
       </Paneset>
     );
