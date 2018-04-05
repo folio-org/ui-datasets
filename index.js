@@ -1,9 +1,7 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import React from 'react';
-import Link from 'react-router-dom/Link';
 import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
+import basic from 'basic-authorization-header';
 
 import Layer from '@folio/stripes-components/lib/Layer';
 import Button from '@folio/stripes-components/lib/Button';
@@ -12,23 +10,29 @@ import SearchField from '@folio/stripes-components/lib/structures/SearchField';
 import Pane from '@folio/stripes-components/lib/Pane';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import PaneMenu from '@folio/stripes-components/lib/PaneMenu';
-import IconButton from '@folio/stripes-components/lib/IconButton';
-import Icon from '@folio/stripes-components/lib/Icon';
+import { modules } from 'stripes-config'; // eslint-disable-line
 
 import Dataset from './Dataset';
+import AddDataset from './AddDataset';
 
+const moduleConfig = modules.app.filter(app => app.module === '@folio/datasets')[0];
+if (!moduleConfig.glint || !moduleConfig.glint.url) {
+  throw new Error('Glint URL not configured');
+}
 const glint = {
-  url: 'http://localhost:8088',
+  url: moduleConfig.glint.url,
   headers: {
   },
 };
+// TODO This is very temporary
+if (moduleConfig.glint.debuguser && moduleConfig.glint.debugpass) {
+  glint.headers.Authorization = basic(moduleConfig.glint.debuguser, moduleConfig.glint.debugpass);
+}
 
-const NoMatch = () => <div>No match!</div>;
-
-const newDatasetButton = (
+const newDatasetButton = onClick => (
   <PaneMenu>
     <Button
-      onClick={this.addNewDataset}
+      onClick={onClick}
       title="Add new dataset"
       buttonStyle="primary paneHeaderNewButton"
       marginBottom0
@@ -79,7 +83,7 @@ class Datasets extends React.Component {
           id="pane-results"
           defaultWidth="fill"
           paneTitle="Datasets"
-          lastMenu={newDatasetButton}
+          lastMenu={newDatasetButton(() => this.setState({ adding: true }))}
           noOverflow
         >
           <MultiColumnList
@@ -94,6 +98,16 @@ class Datasets extends React.Component {
           path={`${match.path}/:dataset`}
           render={props => <Dataset glint={glint} closeURL={match.url} {...props} />}
         />
+        {this.state.adding &&
+          <Layer isOpen label="View dataset">
+            <AddDataset
+              onClose={() => this.setState({ adding: false })}
+              onSuccess={() => this.refresh()}
+              glint={glint}
+              user={match.params.user}
+            />
+          </Layer>
+        }
       </Paneset>
     );
   }

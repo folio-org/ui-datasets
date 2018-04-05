@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import React from 'react';
 import Link from 'react-router-dom/Link';
 import Route from 'react-router-dom/Route';

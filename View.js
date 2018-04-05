@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import csv from 'csvtojson';
 import Paneset from '@folio/stripes-components/lib/Paneset';
