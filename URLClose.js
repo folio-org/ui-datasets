@@ -1,7 +1,8 @@
 import React from 'react';
+import { withRouter } from 'react-router';
+
 import PaneMenu from '@folio/stripes-components/lib/PaneMenu';
 import IconButton from '@folio/stripes-components/lib/IconButton';
-import { withRouter } from 'react-router';
 
 export default withRouter(({ url, id, history }) => (
   <PaneMenu>
