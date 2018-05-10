@@ -3,122 +3,86 @@ import Route from 'react-router-dom/Route';
 import Switch from 'react-router-dom/Switch';
 import basic from 'basic-authorization-header';
 
-import Layer from '@folio/stripes-components/lib/Layer';
-import Button from '@folio/stripes-components/lib/Button';
-import MultiColumnList from '@folio/stripes-components/lib/MultiColumnList';
-import SearchField from '@folio/stripes-components/lib/structures/SearchField';
-import Pane from '@folio/stripes-components/lib/Pane';
-import Paneset from '@folio/stripes-components/lib/Paneset';
-import PaneMenu from '@folio/stripes-components/lib/PaneMenu';
 import { modules } from 'stripes-config'; // eslint-disable-line
 
-import Dataset from './Dataset';
-import AddDataset from './AddDataset';
+import Datasets from './Datasets';
+import GlintContext from './GlintContext';
+import Login from './Login';
+import Logout from './Logout';
+import LoginIndicator from './LoginIndicator';
+import { debug } from 'util';
 
 const moduleConfig = modules.app.filter(app => app.module === '@folio/datasets')[0];
 if (!moduleConfig.glint || !moduleConfig.glint.url) {
   throw new Error('Glint URL not configured');
 }
-const glint = {
-  url: moduleConfig.glint.url,
-  headers: {
-  },
-};
-// TODO This is very temporary
-if (moduleConfig.glint.debuguser && moduleConfig.glint.debugpass) {
-  glint.headers.Authorization = basic(moduleConfig.glint.debuguser, moduleConfig.glint.debugpass);
-}
 
-const newDatasetButton = onClick => (
-  <PaneMenu>
-    <Button
-      onClick={onClick}
-      title="Add new dataset"
-      buttonStyle="primary paneHeaderNewButton"
-      marginBottom0
-    >+ New
-    </Button>
-  </PaneMenu>
-);
-
-class Datasets extends React.Component {
+export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { datasets: [] };
-  }
-
-  componentDidMount() {
-    this.refresh();
-  }
-
-  refresh = () => {
-    const { match: { params } } = this.props;
-    fetch(`${glint.url}/${params.user}`, { headers: glint.headers }).then(res => res.text().then((body) => {
-      if (res.ok) {
-        this.setState({ datasets: body.split('\n').slice(1, -1) });
-      } else {
-        throw new Error(`HTTP error ${body}`);
+    this.state = {
+      glint: {
+        url: moduleConfig.glint.url,
       }
-    }));
+    };
+    if (moduleConfig.glint.debuguser && moduleConfig.glint.debugpass) {
+      this.state.glint.headers = {
+        Authorization: basic(moduleConfig.glint.debuguser, moduleConfig.glint.debugpass),
+      };
+      this.state.glint.user = moduleConfig.glint.debuguser;
+    }
   }
 
-  onSelectRow = (e, meta) => {
-    this.props.history.push(`${this.props.match.url}/${meta.Name}`);
-    this.setState({ clicked: { Name: meta.Name } });
+  setAuth = (username, password) => {
+    this.setState({
+      glint: {
+        ...this.state.glint,
+        user: username,
+        headers: {
+          ...this.state.glint.headers,
+          Authorization: basic(username, password),
+        }
+      }
+    });
+  }
+
+  unsetAuth = () => {
+    this.setState({
+      glint: {
+        ...this.state.glint,
+        user: undefined,
+        headers: {
+          Authorization: undefined,
+        },
+      }
+    });
   }
 
   render() {
-    const { match } = this.props;
     return (
-      <Paneset>
-        <Pane
-          id="pane-filter"
-          defaultWidth="16%"
-          paneTitle="Search & Filter"
-        >
-          <SearchField />
-        </Pane>
-        <Pane
-          padContent={false}
-          id="pane-results"
-          defaultWidth="fill"
-          paneTitle="Datasets"
-          lastMenu={newDatasetButton(() => this.setState({ adding: true }))}
-          noOverflow
-        >
-          <MultiColumnList
-            contentData={this.state.datasets.map(item => ({ Name: item }))}
-            onRowClick={this.onSelectRow}
-            selectedRow={this.state.clicked}
-            virtualize
-            autosize
+      <GlintContext.Provider value={this.state.glint}>
+        <Switch>
+          <Route
+            path={`${this.props.match.path}/login`}
+            render={props => <Login setAuth={this.setAuth} glint={this.state.glint} {...props} />}
           />
-        </Pane>
-        <Route
-          path={`${match.path}/:dataset`}
-          render={props => <Dataset glint={glint} closeURL={match.url} {...props} />}
-        />
-        {this.state.adding &&
-          <Layer isOpen label="View dataset">
-            <AddDataset
-              onClose={() => this.setState({ adding: false })}
-              onSuccess={() => this.refresh()}
-              glint={glint}
-              user={match.params.user}
-            />
-          </Layer>
-        }
-      </Paneset>
+          <Route
+            path={`${this.props.match.path}/logout`}
+            render={props => <Logout unsetAuth={this.unsetAuth} {...props} />}
+          />
+          <Route
+            path={`${this.props.match.path}/:user`}
+            render={props => <Datasets glint={this.state.glint} stripes={this.props.stripes} {...props} />}
+          />
+          <Route component={() => (
+            <div>
+              <div>TODO: listing available datasets from all users</div>
+              <div><LoginIndicator /></div>
+            </div>
+           )}
+          />
+        </Switch>
+      </GlintContext.Provider>
     );
   }
 }
-
-export default props => (
-  <Switch>
-    <Route
-      path={`${props.match.path}/:user`}
-      render={props2 => <Datasets glint={glint} stripes={props.stripes} {...props2} />}
-    />
-    <Route component={() => <div>TODO: listing available datasets from all users</div>} />
-  </Switch>
-);
