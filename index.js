@@ -10,11 +10,11 @@ import GlintContext from './GlintContext';
 import Login from './Login';
 import Logout from './Logout';
 import LoginIndicator from './LoginIndicator';
-import { debug } from 'util';
 
 const moduleConfig = modules.app.filter(app => app.module === '@folio/datasets')[0];
-if (!moduleConfig.glint || !moduleConfig.glint.url) {
-  throw new Error('Glint URL not configured');
+const glint = moduleConfig.glint ? Object.assign({}, moduleConfig.glint) : {};
+if (!glint.url) {
+  glint.url = '';
 }
 
 export default class extends React.Component {
@@ -22,14 +22,14 @@ export default class extends React.Component {
     super(props);
     this.state = {
       glint: {
-        url: moduleConfig.glint.url,
+        url: glint.url,
       }
     };
-    if (moduleConfig.glint.debuguser && moduleConfig.glint.debugpass) {
+    if (glint.debuguser && glint.debugpass) {
       this.state.glint.headers = {
-        Authorization: basic(moduleConfig.glint.debuguser, moduleConfig.glint.debugpass),
+        Authorization: basic(glint.debuguser, glint.debugpass),
       };
-      this.state.glint.user = moduleConfig.glint.debuguser;
+      this.state.glint.user = glint.debuguser;
     }
   }
 
