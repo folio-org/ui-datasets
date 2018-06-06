@@ -35,7 +35,7 @@ class ColumnMd extends React.Component {
           isLoading: false,
           isDisabled: false,
           // md: newMd,
-          md: [newMdStr],
+          md: newMdStr === '' ? [] : [newMdStr],
         });
       } else {
         throw new Error(`HTTP error ${body}`);
