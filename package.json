@@ -28,7 +28,8 @@
     "@folio/stripes-components": "^2.0.0",
     "basic-authorization-header": "^0.2.7",
     "csvtojson": "^1.1.9",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "react-select": "^1.2.1"
   },
   "peerDependencies": {
     "react": "*",

@@ -6,6 +6,7 @@ import { Accordion } from '@folio/stripes-components/lib/Accordion';
 import Layer from '@folio/stripes-components/lib/Layer';
 import Pane from '@folio/stripes-components/lib/Pane';
 
+import ColumnsMd from './ColumnsMd';
 import View from './View';
 import Table from './Table';
 
@@ -33,7 +34,11 @@ class Dataset extends React.Component {
           <Link to={`${match.url}/view/table`}>Table</Link>
         </Accordion>
         <Accordion label="Column metadata">
-          Accordion components cannot be empty?
+          <ColumnsMd
+            glint={this.props.glint}
+            user={match.params.user}
+            dataset={match.params.dataset}
+          />
         </Accordion>
         <Route
           path={`${match.path}/view/:type`}
