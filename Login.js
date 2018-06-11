@@ -27,7 +27,6 @@ class Login extends React.Component {
   handleSubmit = (data) => {
     const { username, password } = data;
     const { url, headers } = this.props.glint;
-    console.log(data);
     fetch(`${url}/login`, {
       method: 'POST',
       headers: {
@@ -37,7 +36,6 @@ class Login extends React.Component {
       },
       body: '{}',
     }).then(res => res.text().then(() => {
-      console.log(res)
       if (res.ok) {
         this.props.setAuth(username, password);
         this.setState({ success: username });
