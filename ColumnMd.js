@@ -50,11 +50,11 @@ class ColumnMd extends React.Component {
     const { md, isLoading, isDisabled } = this.state;
     return (
       <div style={{ width: '100%' }}>
-        <Row middle="md" key={col}>
-          <Col md={3} style={{ textAlign: 'right' }}>
+        <Row className="marginBottomHalf" key={col}>
+          <Col xs={12}>
             <label htmlFor={`colmdselect-${col}`}>{col}</label>
           </Col>
-          <Col md={9}>
+          <Col xs={12}>
             <Select.Creatable
               id={`colmdselect-${col}`}
               isClearable
@@ -70,7 +70,6 @@ class ColumnMd extends React.Component {
         </Row>
       </div>
     );
-    // ^- can't use end="md" on a Col, see: https://github.com/roylee0704/react-flexbox-grid/issues/142
   }
 }
 
