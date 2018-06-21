@@ -4,7 +4,7 @@ import Route from 'react-router-dom/Route';
 import Layer from '@folio/stripes-components/lib/Layer';
 import Button from '@folio/stripes-components/lib/Button';
 import MultiColumnList from '@folio/stripes-components/lib/MultiColumnList';
-import SearchField from '@folio/stripes-components/lib/structures/SearchField';
+import SearchField from '@folio/stripes-components/lib/SearchField';
 import Pane from '@folio/stripes-components/lib/Pane';
 import Paneset from '@folio/stripes-components/lib/Paneset';
 import PaneMenu from '@folio/stripes-components/lib/PaneMenu';
